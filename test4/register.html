@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Daftar - Sweet Bonanza Store</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka+One&family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+
+    <style>
+        body {
+            /* Background Gradasi Permen */
+            background: linear-gradient(135deg, #a8c0ff 0%, #3f2b96 100%);
+            font-family: 'Inter', sans-serif;
+        }
+        .font-candy {
+            font-family: 'Fredoka One', cursive;
+        }
+        /* Animasi Floating */
+        @keyframes float {
+            0% { transform: translateY(0px) rotate(0deg); }
+            50% { transform: translateY(-20px) rotate(10deg); }
+            100% { transform: translateY(0px) rotate(0deg); }
+        }
+        .floating { animation: float 6s ease-in-out infinite; }
+    </style>
+</head>
+<body class="min-h-screen flex items-center justify-center p-4 relative overflow-hidden">
+
+    <div class="absolute top-5 left-5 text-7xl opacity-30 floating" style="animation-delay: 0s;">🍓</div>
+    <div class="absolute bottom-5 right-5 text-8xl opacity-30 floating" style="animation-delay: 2s;">🍌</div>
+    <div class="absolute top-1/2 left-10 text-6xl opacity-25 floating" style="animation-delay: 1.5s;">🍬</div>
+    <div class="absolute bottom-20 right-1/3 text-5xl opacity-25 floating" style="animation-delay: 3s;">💣</div>
+
+    <div class="w-full max-w-md p-8 bg-white/20 backdrop-blur-xl rounded-[2.5rem] shadow-2xl border-4 border-white/40 text-center relative z-10">
+        
+        <div class="mb-4 text-6xl drop-shadow-lg">✨</div>
+        
+        <h2 class="text-3xl font-candy text-white drop-shadow-md mb-2">Join Bonanza!</h2>
+        <p class="text-purple-100 text-sm mb-6 font-medium">Buat akun dan dapatkan sensasinya!</p>
+
+        <form id="registerForm" onsubmit="handleRegister(event)" class="space-y-4">
+            
+            <div class="relative group">
+                <label class="block text-left text-xs font-bold text-white mb-1 ml-2 uppercase tracking-wider shadow-black drop-shadow-sm">Username Baru</label>
+                <input type="text" id="reg-username" placeholder="Cth: SlotMaster99" required
+                    class="w-full p-4 pl-12 rounded-2xl bg-white/90 border-2 border-transparent text-purple-900 placeholder-purple-400 focus:outline-none focus:border-pink-500 focus:ring-4 focus:ring-pink-400/50 transition-all font-bold shadow-inner">
+                <span class="absolute left-4 top-9 text-xl">👤</span>
+            </div>
+
+            <div class="relative group">
+                <label class="block text-left text-xs font-bold text-white mb-1 ml-2 uppercase tracking-wider drop-shadow-sm">Password Rahasia</label>
+                <input type="password" id="reg-password" placeholder="******" required
+                    class="w-full p-4 pl-12 rounded-2xl bg-white/90 border-2 border-transparent text-purple-900 placeholder-purple-400 focus:outline-none focus:border-pink-500 focus:ring-4 focus:ring-pink-400/50 transition-all font-bold shadow-inner">
+                <span class="absolute left-4 top-9 text-xl">🔒</span>
+            </div>
+            
+            <button type="submit" id="btn-submit"
+                class="w-full py-4 text-xl font-candy rounded-2xl bg-gradient-to-r from-yellow-400 to-orange-500 text-white shadow-[0_4px_0_#ea580c] hover:brightness-110 active:translate-y-1 active:shadow-none transition-all mt-6 transform hover:scale-[1.02]">
+                DAFTAR SEKARANG 📝
+            </button>
+        </form>
+        
+        <div class="mt-8 pt-4 border-t border-white/30">
+            <p class="text-purple-100 text-sm">Sudah punya akun?</p>
+            <a href="login.html" class="inline-block font-candy text-yellow-300 hover:text-yellow-100 text-lg transition mt-1 drop-shadow-sm">
+                Login Disini >>
+            </a>
+        </div>
+
+        <div id="msg" class="mt-4 font-bold text-sm min-h-[20px] drop-shadow-md"></div>
+    </div>
+
+    <script>
+        async function handleRegister(e) {
+            e.preventDefault(); 
+            
+            const u = document.getElementById('reg-username').value;
+            const p = document.getElementById('reg-password').value;
+            const msg = document.getElementById('msg');
+            const btn = document.getElementById('btn-submit');
+
+            // Ubah tampilan tombol saat loading
+            btn.disabled = true;
+            btn.innerHTML = "Mendaftarkan... 🔄";
+            btn.classList.add('opacity-80', 'cursor-not-allowed');
+            msg.textContent = "";
+
+            try {
+                const response = await fetch('register.php', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ username: u, password: p })
+                });
+
+                const data = await response.json();
+
+                if (data.status === 'success') {
+                    // Sukses
+                    msg.className = "mt-4 p-2 bg-green-500/80 rounded-xl text-white font-bold border-2 border-white";
+                    msg.innerHTML = `✅ ${data.message}`;
+                    
+                    document.getElementById('registerForm').reset();
+                    
+                    // Redirect otomatis
+                    setTimeout(() => {
+                        window.location.href = "login.html";
+                    }, 2000);
+                } else {
+                    // Error dari server (misal username sudah ada)
+                    msg.className = "mt-4 p-2 bg-red-500/80 rounded-xl text-white font-bold border-2 border-white";
+                    msg.innerHTML = `⛔ ${data.message}`;
+                    
+                    // Reset tombol
+                    btn.disabled = false;
+                    btn.innerHTML = "DAFTAR SEKARANG 📝";
+                    btn.classList.remove('opacity-80', 'cursor-not-allowed');
+                }
+
+            } catch (error) {
+                console.error("Fetch Error:", error);
+                msg.className = "mt-4 p-2 bg-red-500/80 rounded-xl text-white font-bold border-2 border-white";
+                msg.textContent = "Gagal terhubung ke server database.";
+                
+                btn.disabled = false;
+                btn.innerHTML = "DAFTAR SEKARANG 📝";
+                btn.classList.remove('opacity-80', 'cursor-not-allowed');
+            }
+        }
+    </script>
+</body>
+</html>

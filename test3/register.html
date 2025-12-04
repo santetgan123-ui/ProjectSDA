@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Daftar Akun - Top Up Kalcer</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Font Inter -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <!-- Style Custom (Pastikan file style.css ada di folder yang sama) -->
+    <link rel="stylesheet" href="style.css">
+</head>
+<body class="min-h-screen flex items-center justify-center bg-gray-900 p-4">
+
+    <!-- Container Register -->
+    <div class="w-full max-w-md p-8 bg-gray-800 rounded-xl shadow-2xl border-4 border-yellow-500/50 kalcer-gradient text-center">
+        
+        <!-- Header -->
+        <h2 class="text-3xl font-extrabold text-white mb-2">Buat Akun Baru</h2>
+        <p class="text-gray-400 text-sm mb-8">Bergabunglah dengan komunitas Kalcer!</p>
+        
+        <!-- Form Register -->
+        <form id="registerForm" onsubmit="handleRegister(event)" class="space-y-4">
+            
+            <!-- Input Username -->
+            <div class="text-left">
+                <label class="text-xs font-bold text-yellow-500 uppercase ml-1">Username</label>
+                <input type="text" id="reg-username" placeholder="Buat username unik" required
+                    class="w-full p-3 mt-1 rounded-lg bg-gray-700 text-white placeholder-gray-400 focus:ring-2 focus:ring-green-400 focus:outline-none border border-gray-600 transition-all">
+            </div>
+
+            <!-- Input Password -->
+            <div class="text-left">
+                <label class="text-xs font-bold text-yellow-500 uppercase ml-1">Password</label>
+                <input type="password" id="reg-password" placeholder="Buat password rahasia" required
+                    class="w-full p-3 mt-1 rounded-lg bg-gray-700 text-white placeholder-gray-400 focus:ring-2 focus:ring-green-400 focus:outline-none border border-gray-600 transition-all">
+            </div>
+            
+            <!-- Tombol Daftar -->
+            <button type="submit" id="btn-submit"
+                class="w-full py-3 mt-4 text-lg font-bold rounded-lg bg-green-500 text-gray-900 hover:bg-green-400 hover:scale-[1.02] transition duration-300 shadow-[0_0_15px_rgba(74,222,128,0.5)]">
+                Daftar Sekarang
+            </button>
+        </form>
+        
+        <!-- Link ke Login -->
+        <div class="mt-6 pt-4 border-t border-gray-700">
+            <p class="text-sm text-gray-400">Sudah punya akun? 
+                <a href="login.html" class="text-yellow-400 font-bold hover:text-yellow-300 hover:underline transition">Masuk di sini</a>
+            </p>
+        </div>
+
+        <!-- Area Pesan Error/Sukses -->
+        <div id="msg" class="text-sm mt-4 font-semibold min-h-[20px]"></div>
+    </div>
+
+    <!-- Script Logika ke Backend PHP -->
+    <script>
+        async function handleRegister(e) {
+            e.preventDefault(); // Mencegah reload halaman
+            
+            const u = document.getElementById('reg-username').value;
+            const p = document.getElementById('reg-password').value;
+            const msg = document.getElementById('msg');
+            const btn = document.getElementById('btn-submit');
+
+            // Ubah tampilan tombol saat loading
+            btn.disabled = true;
+            btn.textContent = "Mendaftarkan...";
+            btn.classList.add('opacity-70', 'cursor-not-allowed');
+            
+            msg.textContent = "";
+            msg.className = "text-sm mt-4 font-semibold text-gray-300";
+
+            try {
+                // Kirim data ke register.php
+                const response = await fetch('register.php', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ username: u, password: p })
+                });
+
+                // Cek apakah respons valid JSON
+                const text = await response.text();
+                let data;
+                try {
+                    data = JSON.parse(text);
+                } catch (err) {
+                    console.error("Server Error (Not JSON):", text);
+                    throw new Error("Server error. Cek console.");
+                }
+
+                // Tampilkan hasil
+                if (data.status === 'success') {
+                    msg.className = "text-sm mt-4 font-bold text-green-400 bg-green-900/30 p-2 rounded border border-green-500/50";
+                    msg.innerHTML = `✅ ${data.message}`;
+                    
+                    // Reset form
+                    document.getElementById('registerForm').reset();
+                    
+                    // Redirect ke login setelah 2 detik
+                    setTimeout(() => {
+                        window.location.href = "login.html";
+                    }, 2000);
+                } else {
+                    msg.className = "text-sm mt-4 font-bold text-red-400 bg-red-900/30 p-2 rounded border border-red-500/50";
+                    msg.innerHTML = `⛔ ${data.message}`;
+                    
+                    // Kembalikan tombol
+                    btn.disabled = false;
+                    btn.textContent = "Daftar Sekarang";
+                    btn.classList.remove('opacity-70', 'cursor-not-allowed');
+                }
+
+            } catch (error) {
+                console.error("Fetch Error:", error);
+                msg.className = "text-sm mt-4 font-bold text-red-400";
+                msg.textContent = "Gagal terhubung ke server database.";
+                
+                btn.disabled = false;
+                btn.textContent = "Daftar Sekarang";
+                btn.classList.remove('opacity-70', 'cursor-not-allowed');
+            }
+        }
+    </script>
+</body>
+</html>

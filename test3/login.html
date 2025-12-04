@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - Top Up Kalcer</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body class="min-h-screen flex items-center justify-center bg-gray-900 p-4">
+
+    <div class="w-full max-w-md p-8 bg-gray-800 rounded-xl shadow-2xl border-4 border-yellow-500/50 kalcer-gradient text-center">
+        <h2 class="text-3xl font-bold text-yellow-300 mb-6" id="auth-title">MASUK KE TOP UP SEADANYA</h2>
+        
+        <div id="login-form-content">
+            <input type="text" id="login-username" placeholder="Username"
+                class="w-full p-3 mb-4 rounded-lg bg-gray-700 text-white placeholder-gray-400 focus:ring-2 focus:ring-yellow-500 border border-transparent outline-none transition">
+            <input type="password" id="login-password" placeholder="Password"
+                class="w-full p-3 mb-6 rounded-lg bg-gray-700 text-white placeholder-gray-400 focus:ring-2 focus:ring-yellow-500 border border-transparent outline-none transition">
+            
+            <button id="button-login"
+                class="w-full py-3 text-lg font-bold rounded-lg bg-yellow-500 text-gray-900 neon-shadow hover:bg-yellow-400 transition duration-300 mb-4 hover:scale-[1.02]">
+                Login
+            </button>
+            
+            <p class="text-sm text-gray-400">Belum punya akun? 
+                <a href="register.html" class="text-yellow-500 font-semibold hover:underline">Buat Akun</a>
+            </p>
+        </div>
+
+        <p id="auth-message" class="text-sm mt-3 text-red-400 font-semibold min-h-[20px]"></p>
+    </div>
+
+    <script src="musicpcal.js"></script>
+</body>
+</html>

@@ -1,0 +1,151 @@
+/* =========================================
+   STYLE GLOBAL & UTAMA
+   ========================================= */
+body {
+    font-family: 'Inter', sans-serif;
+    background-color: #0f1115; /* Background halaman lebih gelap */
+    color: #e2e8f0;
+}
+
+/* Reset Box Model */
+*, *::before, *::after {
+    box-sizing: border-box;
+}
+
+/* Container Utama (Box Besar) */
+.kalcer-gradient {
+    background-color: #1C2331; 
+    color: white;
+    border: 3px solid #FFD700;
+    box-shadow: 0 0 40px rgba(255, 215, 0, 0.15);
+    width: 95%; 
+    max-width: 1400px;
+}
+
+.kalcer-highlight {
+    color: #FFD700; 
+}
+
+/* Efek Teks Neon */
+.neon-shadow {
+    text-shadow: 0 0 5px #FFD700, 0 0 15px rgba(255, 215, 0, 0.6);
+    transition: all 0.3s ease;
+}
+.neon-shadow:hover {
+    text-shadow: 0 0 10px #FFD700, 0 0 25px #FFD700;
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+    width: 8px;
+}
+::-webkit-scrollbar-thumb {
+    background: #FFD700;
+    border-radius: 4px;
+}
+::-webkit-scrollbar-thumb:hover {
+    background: #e6c200;
+}
+
+/* =========================================
+   GAME STACKER KALCER - CYBERPUNK STYLE
+   ========================================= */
+
+#game-container {
+    background: #111827; /* Latar container game */
+    border: 1px solid rgba(255, 215, 0, 0.2);
+}
+
+#stacker-board {
+    display: flex;
+    flex-direction: column;
+    /* Latar Belakang Grid Halus */
+    background-color: #050505; 
+    background-image: 
+        linear-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+    background-size: 20px 20px;
+    
+    /* Border Neon */
+    border: 2px solid #FFD700;
+    box-shadow: 0 0 15px rgba(255, 215, 0, 0.15), inset 0 0 40px rgba(0,0,0,0.9);
+    position: relative;
+    overflow: hidden; /* Agar balok jatuh tidak keluar layout */
+}
+
+/* Animasi Getar (Shake) saat Meleset/Kalah */
+.shake-board {
+    animation: shake 0.4s cubic-bezier(.36,.07,.19,.97) both;
+}
+
+@keyframes shake {
+  10%, 90% { transform: translate3d(-2px, 0, 0); }
+  20%, 80% { transform: translate3d(4px, 0, 0); }
+  30%, 50%, 70% { transform: translate3d(-6px, 0, 0); }
+  40%, 60% { transform: translate3d(6px, 0, 0); }
+}
+
+/* Struktur Grid Game */
+.block-row {
+    flex: 1; /* Tinggi baris rata */
+    display: flex;
+    width: 100%;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.02);
+}
+
+.block-cell {
+    flex: 1; /* Lebar sel rata */
+    border-right: 1px solid rgba(255, 255, 255, 0.02);
+    transition: background-color 0.1s;
+    position: relative;
+}
+
+/* --- BALOK BERGERAK (EMAS NEON) --- */
+.moving {
+    background: linear-gradient(135deg, #ffd700 0%, #ffb300 100%);
+    box-shadow: 0 0 15px #FFD700, inset 0 0 5px rgba(255,255,255,0.8);
+    z-index: 10;
+    border-radius: 2px;
+}
+
+/* --- BALOK TERSUSUN (CYAN NEON) --- */
+.stacked {
+    background: linear-gradient(135deg, #38bdf8 0%, #0ea5e9 100%);
+    box-shadow: 0 0 10px #38bdf8, inset 0 0 5px rgba(255,255,255,0.5);
+    z-index: 5;
+    border-radius: 2px;
+    animation: pulseCyan 1.5s infinite alternate;
+}
+@keyframes pulseCyan {
+    from { box-shadow: 0 0 5px #38bdf8; }
+    to { box-shadow: 0 0 15px #38bdf8; }
+}
+
+/* --- BALOK MELESET (MERAH HANCUR) --- */
+.missed {
+    background-color: #ef4444;
+    box-shadow: 0 0 20px #ef4444;
+    z-index: 20;
+    /* Animasi Jatuh */
+    animation: fallDownFade 0.6s forwards ease-in;
+}
+
+@keyframes fallDownFade {
+    0% { 
+        opacity: 1; 
+        transform: translateY(0) scale(1);
+    }
+    100% { 
+        opacity: 0; 
+        transform: translateY(150px) rotate(15deg) scale(0.5);
+    }
+}
+
+/* Efek Kilatan (Flash) saat sukses */
+.row-flash {
+    animation: flashSuccess 0.2s ease-out;
+}
+@keyframes flashSuccess {
+    0% { background-color: rgba(255, 255, 255, 0.8); }
+    100% { background-color: transparent; }
+}

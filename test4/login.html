@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - Sweet Bonanza Store</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka+One&family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+    
+    <style>
+        body {
+            /* Background tema permen */
+            background: linear-gradient(135deg, #a8c0ff 0%, #3f2b96 100%);
+            font-family: 'Inter', sans-serif;
+        }
+        .font-candy {
+            font-family: 'Fredoka One', cursive;
+        }
+        /* Animasi mengambang untuk hiasan */
+        @keyframes float {
+            0% { transform: translateY(0px); }
+            50% { transform: translateY(-20px); }
+            100% { transform: translateY(0px); }
+        }
+        .floating { animation: float 6s ease-in-out infinite; }
+    </style>
+</head>
+<body class="min-h-screen flex items-center justify-center p-4 relative overflow-hidden">
+
+    <div class="absolute top-10 left-10 text-6xl opacity-40 floating" style="animation-delay: 0s;">🍇</div>
+    <div class="absolute bottom-10 right-10 text-8xl opacity-40 floating" style="animation-delay: 2s;">💣</div>
+    <div class="absolute top-1/2 right-20 text-5xl opacity-30 floating" style="animation-delay: 4s;">🍭</div>
+    <div class="absolute bottom-20 left-20 text-6xl opacity-30 floating" style="animation-delay: 1s;">🍉</div>
+
+    <div class="w-full max-w-md p-8 bg-white/20 backdrop-blur-xl rounded-[2rem] shadow-2xl border-4 border-white/50 text-center relative z-10">
+        
+        <div class="w-24 h-24 bg-gradient-to-br from-pink-400 to-purple-500 rounded-full mx-auto mb-6 flex items-center justify-center border-4 border-white shadow-lg">
+            <span class="text-4xl">👑</span>
+        </div>
+
+        <h2 class="text-3xl font-candy text-white drop-shadow-md mb-2">Member Login</h2>
+        <p class="text-purple-100 text-sm mb-8 font-medium">Masuk untuk klaim bonus harian!</p>
+        
+        <form id="loginForm" onsubmit="handleLogin(event)" class="space-y-4">
+            <div class="relative">
+                <input type="text" id="username" placeholder="Username" required
+                    class="w-full p-4 pl-12 rounded-xl bg-white/80 border-2 border-transparent text-purple-900 placeholder-purple-400 focus:outline-none focus:border-pink-500 focus:ring-4 focus:ring-pink-500/30 transition-all font-bold shadow-inner">
+                <span class="absolute left-4 top-4 text-xl">👤</span>
+            </div>
+            
+            <div class="relative">
+                <input type="password" id="password" placeholder="Password" required
+                    class="w-full p-4 pl-12 rounded-xl bg-white/80 border-2 border-transparent text-purple-900 placeholder-purple-400 focus:outline-none focus:border-pink-500 focus:ring-4 focus:ring-pink-500/30 transition-all font-bold shadow-inner">
+                <span class="absolute left-4 top-4 text-xl">🔑</span>
+            </div>
+            
+            <button type="submit" id="btn-login"
+                class="w-full py-4 text-xl font-candy rounded-xl bg-gradient-to-r from-green-400 to-green-600 text-white shadow-[0_4px_0_#15803d] hover:brightness-110 active:translate-y-1 active:shadow-none transition-all mt-4">
+                MASUK SEKARANG 🚀
+            </button>
+        </form>
+
+        <div class="mt-8 pt-6 border-t border-white/30">
+            <p class="text-white">Belum punya akun?</p>
+            <a href="register.html" class="inline-block mt-2 px-6 py-2 bg-purple-600/50 hover:bg-purple-600 text-white rounded-full font-bold transition-colors border border-white/30">
+                Daftar Member Baru ✨
+            </a>
+        </div>
+
+        <div id="msg" class="mt-4 font-bold text-sm min-h-[20px] text-white drop-shadow-md"></div>
+    </div>
+
+    <script>
+        async function handleLogin(e) {
+            e.preventDefault();
+            
+            const u = document.getElementById('username').value;
+            const p = document.getElementById('password').value;
+            const btn = document.getElementById('btn-login');
+            const msg = document.getElementById('msg');
+
+            // Efek Loading
+            btn.innerHTML = "Memproses... ⏳";
+            btn.disabled = true;
+            btn.classList.add('opacity-70', 'cursor-not-allowed');
+            msg.className = "mt-4 font-bold text-sm text-yellow-300";
+            msg.textContent = "";
+
+            try {
+                const response = await fetch('login.php', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ username: u, password: p })
+                });
+
+                const data = await response.json();
+
+                if (data.status === 'success') {
+                    msg.className = "mt-4 font-bold text-sm text-green-300";
+                    msg.innerHTML = "✅ Login Berhasil! Mengalihkan...";
+                    
+                    // Simpan sesi
+                    localStorage.setItem('user_id', data.user_id);
+                    localStorage.setItem('username', data.username);
+                    
+                    // Redirect ke halaman utama
+                    setTimeout(() => {
+                        window.location.href = "Utama.html";
+                    }, 1500);
+                } else {
+                    throw new Error(data.message);
+                }
+
+            } catch (error) {
+                msg.className = "mt-4 font-bold text-sm text-red-300 bg-red-900/50 p-2 rounded-lg";
+                msg.innerHTML = `⛔ ${error.message || "Gagal terhubung server"}`;
+                
+                // Reset Tombol
+                btn.innerHTML = "MASUK SEKARANG 🚀";
+                btn.disabled = false;
+                btn.classList.remove('opacity-70', 'cursor-not-allowed');
+            }
+        }
+    </script>
+</body>
+</html>
